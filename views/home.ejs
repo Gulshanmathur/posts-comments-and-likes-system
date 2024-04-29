@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact List</title>
+</head>
+<body>
+    <h1><%= title %></h1>
+    <div>
+        <h2><%=user.title %></h2>
+        <h4><%= user.name %></h4>
+        <h4><%= user.email %></h4>
+        <form action="/addUser" method="post">
+              <input type="text" required placeholder="Enter the name" name="inputField" >
+              <input type="number"  placeholder="Enter phone number" name="phoneNum" required>
+              <button>Add</button>
+        </form>
+        <ul>
+            <% for (const i of contactlist) { %>
+              <li>
+                <p><%= i.name %> &nbsp; <%= i.phone %></p>
+                <span></span>
+            </li>
+            <% } %>
+          </ul>
+    </div>
+</body>
+</html>
