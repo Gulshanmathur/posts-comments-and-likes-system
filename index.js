@@ -6,6 +6,7 @@ const router = require("./routes/user");
 const routerPost = require("./routes/post");
 const mongoose = require("mongoose");
 const User = require("./models/user");
+const { restrictToLoggedinUserOnly } = require("./middleware/auth");
 app.set("view engine", "ejs");
 app.set("views", path.resolve("./views"));
 app.use(express.urlencoded({ extended: false }));
@@ -31,27 +32,20 @@ const contact = [
     name: "June",
     phone: +1834111145,
   },
-];
+]; 
 
 // app.get("/login",(req,res)=>{
 //     return res.render("login")
 // })
 
-app.get("/", async (req, res) => {
-  try {
-    if (req.cookies.user_id) {
-      const user = await User.findById(req.cookies.user_id);
-      if (user)
+app.get("/",restrictToLoggedinUserOnly,(req, res) => {
+
         return res.render("home", {
           title: "Profile Details",
-          user: user,
+          user: req.user,
           contactlist: contact,
         });
-    }
-    return res.render("/user/login");
-  } catch (err) {
-    console.log("user_id is not found");
-  }
+    
 });
 
 app.post("/addUser", (req, res) => { 
