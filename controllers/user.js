@@ -1,9 +1,11 @@
 const User = require("../models/user");
 const signup = (req, res) => {
+  if(req.isAuthenticated()) return res.redirect("/");
   return res.render("signup");
 };
-
+ 
 const login = (req, res) => {
+  if(req.isAuthenticated()) return res.redirect("/");
   return res.render("login");
 };
 
@@ -34,4 +36,17 @@ const postSignup = async (req, res) => {
   }
 };
 
-module.exports = { signup, login, postLogin, postSignup };
+const createSession = (req,res)=>{
+  return res.redirect("/")
+}
+ 
+const destroySession = (req,res,next)=>{
+  req.logout(function(err) {
+    if (err) {
+      return next(err);
+    }
+    res.redirect("/");
+  });
+}
+
+module.exports = { signup, login, postLogin, postSignup,createSession,destroySession };

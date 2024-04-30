@@ -1,23 +1,54 @@
 const express = require("express");
 const path = require("path");
 const app = express();
+const passport = require('passport');
+const passportConfig = require("./middleware/passport-local-strategy")
 const cookieParser = require("cookie-parser");
 const router = require("./routes/user");
 const routerPost = require("./routes/post");
 const mongoose = require("mongoose");
+
 const User = require("./models/user");
 const { restrictToLoggedinUserOnly } = require("./middleware/auth");
-app.set("view engine", "ejs");
-app.set("views", path.resolve("./views"));
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use("/user", router);
-app.use("/posts", routerPost);
+const session = require('express-session');
+const MongoStore = require('connect-mongo');
 
+// mongoDB Connection
 mongoose
   .connect("mongodb://127.0.0.1:27017/login-user")
   .then(() => console.log("connection is ready to use."))
   .catch((err) => console.log("error to create connection to db"));
+
+app.set("view engine", "ejs");
+app.set("views", path.resolve("./views"));
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+
+// Session configuration
+app.use(session({
+  name:"codial",
+  secret:"somethingbla",
+  resave: false,
+  saveUninitialized: false,
+  cookie:{
+    maxAge: (1000*60*100),
+  },
+  store: MongoStore.create({                //MongoStore store for session cookies
+    mongoUrl:"mongodb://127.0.0.1:27017/login-user",
+    ttl: 14 * 24 * 60 * 60,
+    autoRemove: "disabled"
+  },function (err) {
+     console.log(err || "connect mongodb setup-OK");
+  })
+}))
+// Passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(passport.setAuthenticatedUser)
+
+app.use("/user", router);
+app.use("/posts", routerPost);
+
 
 const contact = [
   {
@@ -38,11 +69,11 @@ const contact = [
 //     return res.render("login")
 // })
 
-app.get("/",restrictToLoggedinUserOnly,(req, res) => {
-
+app.get("/",passport.checkAuthentication,(req, res) => {   //app.get("/",restrictToLoggedinUserOnly,(req, res)
+       console.log(req.user);
         return res.render("home", {
           title: "Profile Details",
-          user: req.user,
+          user : req.user,
           contactlist: contact,
         });
     
