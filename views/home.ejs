@@ -6,13 +6,9 @@
     <title>Contact List</title>
 </head>
 <body>
-    <%- include('_header') %>
-    <h1><%= title %></h1>
-    <h3><%= user.name %></h3>
-    <h3><%= user.email %></h3>
-    
+    <%- include('_header') %>    
     <div>
-        <form action="/addUser" method="post">
+        <form action="/user/addUser" method="post">
               <input type="text" required placeholder="Enter the name" name="inputField" >
               <input type="number"  placeholder="Enter phone number" name="phoneNum" required>
               <button>Add</button>

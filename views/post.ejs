@@ -1,9 +1,23 @@
-<h1><%= title %></h2>
-
+<%- include('_header') %>
+<!-- <h2><%= user.name %> Posts </h2> -->
 <section>
-    <h4>Post</h4>
-  <form action="/posts/create" method="post">
+  
+    <h4><%= user.name %> Posts ↓</h4> 
+    <% if(locals.user){ %>
+  <form action="/post/createPost" method="post">
     <textarea name="content"  cols="30" rows="3"></textarea>
     <input type="submit" value="post">
   </form>
+  <% } %>
+  <div class="post-list-container">
+    <ul>
+      <% for(post of posts){ %>
+        <p>
+       <li><%= post.content %></li>
+       <br>
+       <small><%= post.user[0].name %></small>
+      </p>
+       <%}%>
+    </ul>
+  </div>
 </section>

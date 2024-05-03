@@ -9,7 +9,7 @@ const routerPost = require("./routes/post");
 const mongoose = require("mongoose");
 
 const User = require("./models/user");
-const { restrictToLoggedinUserOnly } = require("./middleware/auth");
+// const { restrictToLoggedinUserOnly } = require("./middleware/auth");
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 
@@ -46,48 +46,11 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(passport.setAuthenticatedUser)
 
+//routes
 app.use("/user", router);
-app.use("/posts", routerPost);
+app.use("/post", routerPost); 
 
-
-const contact = [
-  {
-    name: "Tony",
-    phone: +918342342,
-  },
-  {
-    name: "Addy",
-    phone: +918344566,
-  },
-  {
-    name: "June",
-    phone: +1834111145,
-  },
-]; 
-
-// app.get("/login",(req,res)=>{
-//     return res.render("login")
-// })
-
-app.get("/",passport.checkAuthentication,(req, res) => {   //app.get("/",restrictToLoggedinUserOnly,(req, res)
-       console.log(req.user);
-        return res.render("home", {
-          title: "Profile Details",
-          user : req.user,
-          contactlist: contact,
-        });
-    
-});
-
-app.post("/addUser", (req, res) => { 
-  const { inputField, phoneNum } = req.body;
-  contact.push({
-    name: inputField,
-    phone: +phoneNum,
-  });
-  return res.redirect("back"); // just shortCut to get back data on same page
-});
-
+//listen connections
 app.listen(8000, () => {
   console.log(`server is running at port no.8000`);
 });

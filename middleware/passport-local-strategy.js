@@ -8,12 +8,14 @@ passport.use("local",
     { usernameField: "email" },
     async (email, password, done) => {
       const user = await User.findOne({email});
-      console.log(user);
+
+      
       if (!user || user.password != password)
         return done(null, false, {
           message: "Incorrect password or maybe user not exits",
         });
-        return done(null,user);
+        // console.log("inside passport auth",user);
+        return done(null,user); 
     }
   )
 );
@@ -41,6 +43,6 @@ passport.setAuthenticatedUser = (req,res,next)=>{
   if(req.isAuthenticated()) res.locals.user = req.user;
   next();
 }
-
-
+  
+  
 module.exports = passport;
