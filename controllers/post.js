@@ -16,18 +16,22 @@ const contact = [
 
 const displayPost = async (req, res) => {
   try {
-    // const posts = await Post.find({});
-    //   return res.render("post", {
-    //     title: "User Posts",
-    //     posts:posts
-    //   });
-    const posts = await Post.find({}).populate('user').exec();
+    const posts = await Post.find({})
+      .populate('user')
+      .populate({
+        path: "comments",
+        populate: {
+          path: 'user'
+        }
+      })
+      .exec();
+      console.log(posts[0]);
     return res.render("post", {
-          title: "User Posts",
-          posts:posts
-        });
-  } catch (error) {  
-    console.log("post is missing",error);
+      title: "User Posts",
+      posts: posts
+    });
+  } catch (error) {
+    console.log("Error fetching posts:", error);
   }
 };
 

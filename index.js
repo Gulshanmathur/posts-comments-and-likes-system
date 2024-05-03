@@ -6,6 +6,7 @@ const passportConfig = require("./middleware/passport-local-strategy")
 const cookieParser = require("cookie-parser");
 const router = require("./routes/user");
 const routerPost = require("./routes/post");
+const routerComment = require("./routes/comment")
 const mongoose = require("mongoose");
 
 const User = require("./models/user");
@@ -49,6 +50,7 @@ app.use(passport.setAuthenticatedUser)
 //routes
 app.use("/user", router);
 app.use("/post", routerPost); 
+app.use("/comments",routerComment);
 
 //listen connections
 app.listen(8000, () => {
